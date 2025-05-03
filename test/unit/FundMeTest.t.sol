@@ -18,7 +18,6 @@ contract FundMeTest is Test {
     }
 
     function testMinimumUSD() public view {
-
         assertEq(fundMe.MINIMUM_USDT(), 5e18);
     }
 

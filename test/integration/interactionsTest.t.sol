@@ -16,7 +16,6 @@ contract InteractionTest is Test {
     }
 
     function testUserCanFundAndOwnerWithdraw() public {
-
         FundFundMe fundFundMe = new FundFundMe();
         fundFundMe.fundFundme(address(fundMe));
 
@@ -29,11 +28,7 @@ contract InteractionTest is Test {
         uint256 endingFundMeBalance = address(fundMe).balance;
         uint256 endingOwnerBalance = fundMe.getOwner().balance;
 
-
         assertEq(endingFundMeBalance, 0);
-        assertEq(
-            endingOwnerBalance,
-            startingFundMeBalance + startingOwnerBalance
-        );
+        assertEq(endingOwnerBalance, startingFundMeBalance + startingOwnerBalance);
     }
 }
