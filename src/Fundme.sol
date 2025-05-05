@@ -28,21 +28,15 @@ contract FundMe {
 
     AggregatorV3Interface private immutable s_priceFeed;
 
-    mapping(address funder => uint256 amountFunded)
-        private s_addressToAmountFunded;
+    mapping(address funder => uint256 amountFunded) private s_addressToAmountFunded;
 
     function fund() public payable {
         //allow users to send money
         //have a min money sent
-        require(
-            msg.value.getConversionRate(s_priceFeed) > MINIMUM_USDT,
-            "didnt send enough eth"
-        ); //1e18 = 1 ETH // force to send money
+        require(msg.value.getConversionRate(s_priceFeed) > MINIMUM_USDT, "didnt send enough eth"); //1e18 = 1 ETH // force to send money
         //revert undo any actions that have been done and undo the remaining gas back
         s_funders.push(msg.sender);
-        s_addressToAmountFunded[msg.sender] =
-            s_addressToAmountFunded[msg.sender] +
-            msg.value;
+        s_addressToAmountFunded[msg.sender] = s_addressToAmountFunded[msg.sender] + msg.value;
         // s_addressToAmountFunded[msg.sender] += msg.value;  same as this
     }
 
@@ -63,11 +57,7 @@ contract FundMe {
         //for loop
         //(starting index, ending index, steps)
         // require(msg.sender == owner,"not owner!!");   use modifier instead
-        for (
-            uint256 funderIndex = 0;
-            funderIndex < s_funders.length;
-            funderIndex++
-        ) {
+        for (uint256 funderIndex = 0; funderIndex < s_funders.length; funderIndex++) {
             address funder = s_funders[funderIndex];
             s_addressToAmountFunded[funder] = 0;
         }
@@ -84,19 +74,13 @@ contract FundMe {
         // require(sendSuccess,"sendet fuck shod");
 
         //call
-        (bool callSuccess, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
+        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "callet fuck shod");
     }
 
     function cheaperWithdraw() public onlyOwner {
         uint256 fundersLength = s_funders.length;
-        for (
-            uint256 funderIndex = 0;
-            funderIndex < fundersLength;
-            funderIndex++
-        ) {
+        for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
             address funder = s_funders[funderIndex];
             s_addressToAmountFunded[funder] = 0;
         }
@@ -106,9 +90,7 @@ contract FundMe {
         //withdraw funds
 
         //call
-        (bool callSuccess, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
+        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "callet fuck shod");
     }
 
@@ -132,9 +114,7 @@ contract FundMe {
     //The receive function is specifically designed to handle Ether transfers without data and is automatically invoked when Ether.
     // The fallback function is used for handling calls with data or when the receive function is not defined. The fallback function can also handle Ether transfers with data.
 
-    function getAddressToAmountFunded(
-        address fundingAddress
-    ) external view returns (uint256) {
+    function getAddressToAmountFunded(address fundingAddress) external view returns (uint256) {
         return s_addressToAmountFunded[fundingAddress];
     }
 
